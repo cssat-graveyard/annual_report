@@ -27,6 +27,18 @@ first_last <- function(data) {
 }
 
 
+spark <- function(data) {
+    data <- arrange_(data, x)
+    sparkline = ggplot(data, aes_string(x = x, y = y)) +
+        geom_line(color = portal_colors[8]) +
+        theme_clean() +
+        geom_point(data = first_last(data), col = portal_colors[8])
+    return(sparkline)
+}
+
+x <- names(data)[1]
+y = names(data)[2]
+
 
 ggplot(gen.ref, aes(x = date, y= referral.rate)) +
     geom_line(color = portal_colors[8]) +

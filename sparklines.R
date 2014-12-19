@@ -6,7 +6,22 @@ load("graph_dat.RData")
 
 measures <- list()
 
-sections <- c("Safety", "Permanency", "Well-Being")
+sparkdata <- list(gen.rate.referrals = sp_rate_referral_clean[sp_rate_referral_clean$type=="Deseasonalized Trend",
+                                                              c("date", "referral.rate")],
+                  gen.rate.screen = sp_rate_referral_scrn_in_clean[sp_rate_referral_scrn_in_clean$type=="Deseasonalized Trend",
+                                                                  c("date", "referral.rate")],
+                  gen.rate.place = sp_rate_placement_clean[sp_rate_placement_clean$type=="Deseasonalized Trend",
+                                                           c("cohort.date", "placement.rate")]
+                  
+                  
+                  
+                )
+
+sp_rate_placement_clean[sp_rate_placement_clean$type=="Deseasonalized Trend",] %>%
+    head()
+
+
+
 
 # Columns for table: 
 # Section | Table | Measure | Units | start_val | end_val | change_cat | assessment
