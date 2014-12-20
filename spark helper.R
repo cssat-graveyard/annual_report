@@ -1,3 +1,6 @@
+library(ggplot2)
+library(pocr)
+
 # Spark helper functions
 
 first_last <- function(data) {
@@ -26,9 +29,10 @@ first_last <- function(data) {
     data[c(1, nrow(data)), ]
 }
 
-
+# Draws sparkline
 spark <- function(data) {
-    data <- arrange_(data, x)
+    x = names(data)[1]
+    y = names(data)[2]
     sparkline = ggplot(data, aes_string(x = x, y = y)) +
         geom_line(color = portal_colors[8]) +
         theme_clean() +
@@ -36,12 +40,18 @@ spark <- function(data) {
     return(sparkline)
 }
 
-x <- names(data)[1]
-y = names(data)[2]
+# Extracts values for spark table
+sparktable <- function(data) {
+    x = names(data)[1]
+    y = names(data)[2]
+    data = arrange_(data, x)
+    data.frame(start.value = round(data[1, y], 1),
+               end.value = round(data[nrow(data), y], 1),
+               start.x = as.character(data[1, x]),
+               end.x = as.character(data[nrow(data), x]))
+}
 
 
-ggplot(gen.ref, aes(x = date, y= referral.rate)) +
-    geom_line(color = portal_colors[8]) +
-    theme_clean() +
-    geom_point(data = first_last(gen.ref), col = portal_colors[8])
-ggsave(filename = "test-spark-gg.pdf", width = 3, height = 1)
+
+
+
