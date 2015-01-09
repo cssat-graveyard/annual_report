@@ -3,14 +3,27 @@ library(plotflow)
 library(pocr)
 library(dplyr)
 library(mstate)
+library(magrittr)
 
 #setwd("S:/Data Portal/annual_report")
 load("graph_dat.RData")
 
 names(rate_care_day_movement_tx) <- make.names(names(rate_care_day_movement_tx))
-movement_tx <- rate_care_day_movement_tx %>% select(fiscal_yr, Movement.Rate) %>%
-    split(f = list(rate_care_day_movement_tx$type, rate_care_day_movement_tx$years_in_care))
+rcdm = rate_care_day_movement_tx
+rcdm %<>% mutate(type = factor(type, levels = c("Transition to Foster",
+                                                "Transition to Kin",
+                                                "Transition to Group")),
+                 years_in_care = factor(paste("years", years_in_care)))
+
+movement_tx <- rcdm %>% select(fiscal_yr, Movement.Rate) %>%
+    split(f = list(rcdm$years_in_care, rcdm$type))
 names(movement_tx) = make.names(names(movement_tx))
+
+rcdm %>% group_by(type, years_in_care) %>%
+    arrange(fiscal_yr) %>%
+    summarize(y2000 = first(Movement.Rate),
+              y2014 = last(Movement.Rate))
+
 
 names(rate_care_day_otr) <- make.names(names(rate_care_day_otr))
 otr = rate_care_day_otr %>% select(fiscal_yr, On.The.Run.Rate) %>%
