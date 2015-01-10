@@ -68,7 +68,7 @@ cohort_9th_grade <- ggplot(data_9th_grade, aes(x = tx_student_type, y = enrollme
 		  panel.grid.major = element_blank(),
 		  axis.title.x = element_text(vjust = -.5, size = 16),
 		  axis.title.y = element_text(vjust = .85, size = 16),
-		  legend.position="bottom")											
+		  legend.position="bottom")											 
 
 cohort_9th_grade
 ggsave("cohort_9th_grade.pdf", cohort_9th_grade)
