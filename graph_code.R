@@ -704,6 +704,31 @@ pdR_Mtx <- ggplot(rate_care_day_movement_tx_long[rate_care_day_movement_tx_long$
   theme_bw() +
   theme(legend.position="bottom")
 
+library(stringr)
+library(dplyr)
+library(reshape2)
+
+move_to_kin <- filter(rate_care_day_movement_tx_long, str_detect(type, "Kin"))
+move_to_kin <- dcast(move_to_kin, formula = fiscal_yr + years_in_care + type ~ variable, value.var = "value")
+names(move_to_kin) <- make.names(names(move_to_kin))
+
+move_to_kin_graph <- ggplot(move_to_kin, aes(x = fiscal_yr, y = Movement.Rate,
+                        ymin = Lower.Limit, ymax = Upper.Limit)) +
+    geom_point(size=3) + 
+    geom_smooth(fill=NA,
+                color = portal_colors[8],
+                size = 1,
+                ,method="lm") +
+    geom_line(aes(y = Lower.Limit), color = poc_colors[1]) +
+    geom_line(aes(y = Upper.Limit), color = poc_colors[3]) +
+    xlab("") +
+    ylab("Transition to Kin Care\n(per 100,000 Care Days)") + 
+    facet_wrap(~ years_in_care) +
+    theme_bw() +
+    theme(strip.background = element_rect(fill = NA))
+
+ggsave("movement_to_kin.pdf", move_to_kin_graph, width = 12, height = 6)
+
 R_Mk_14.1 <- rate_care_day_movement_tx[rate_care_day_movement_tx$fiscal_yr==2014 & 
                                          rate_care_day_movement_tx$years_in_care==0 & 
                                          rate_care_day_movement_tx$type == "Transition to Kin", ][[3]]
