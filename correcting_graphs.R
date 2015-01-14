@@ -43,7 +43,65 @@ pR_D
 
 ggsave(file="droupout.pdf", plot = pR_D, width = 8, height = 4.5)
 
-## OTR ####
+
+## safe care-days g6 ####
+safe.care = sp_rate_care_day_maltreatment_clean %>% 
+    mutate(safe.rate = 1e5 - care.day.incident.rate,
+           ucl.old = ucl,
+           ucl = 1e5 - lcl,
+           lcl = 1e5 - ucl.old) %>%
+    select(fiscal.yr, safe.rate, ucl, lcl)
+
+safe.care.plot = ggplot(safe.care, aes(x = fiscal.yr, y = safe.rate)) +
+    geom_line(aes(y = ucl), color = poc_colors[2]) +
+    geom_line(aes(y = lcl), color = poc_colors[1]) +
+    geom_line(color = poc_colors[4]) +
+    geom_point(size = 2, color = poc_colors[4]) +
+    scale_y_continuous(limits = c(99980, 1e5), expand = c(0, 0), labels = comma_format()) +
+    scale_x_continuous(breaks = seq(2000, 2014, by = 4)) +
+    labs(x = "", y = "Note: y-axis does not start at 0",
+         title = "Safe Care-Days per 100,000 Care-Days") +
+    theme_bw() +
+    theme(legend.position="bottom",
+          panel.grid.minor = element_blank(),
+          strip.background = element_blank(),
+          axis.title = element_text(size = rel(0.8)))
+
+#ggsave("safe-care.pdf", plot = safe.care.plot, width = 5, height = 3.5)
+ggsave("graph-6.pdf", plot = safe.care.plot, width = 5, height = 3.5)
+
+
+## overall transitions g7 ####
+
+cdm = rate_care_day_movement_long
+levels(cdm$years_in_care) = str_replace(levels(cdm$years_in_care), "Care Days", "Care-Days")
+pdR_M <- ggplot(filter(cdm, variable != "Movement Rate")
+                ,aes(x=fiscal_yr
+                     ,y=value
+                     ,group=variable
+                     ,colour=variable)) + 
+    geom_line(size= 0.5) +
+    geom_point(data= filter(cdm, variable == "Movement Rate")
+               ,aes(x=fiscal_yr
+                    ,y=value)
+               ,size=1.8) + 
+    geom_smooth(data=filter(cdm, variable == "Movement Rate")
+                ,aes(x=fiscal_yr
+                     ,y=value)
+                ,fill=NA
+                ,method="lm") +
+    labs(x = "",
+         y = "Movement Rate Per 100,000 Care-Days") + 
+    scale_color_manual(name="", values=c(poc_colors[c(1,4,2)]), guide = F) +
+    facet_wrap(~years_in_care) +
+    theme_bw(10) +
+    theme(legend.position = "bottom",
+          panel.grid.minor = element_blank(),
+          strip.background = element_blank(),
+          axis.title = element_text(size = rel(0.8)))
+ggsave("graph-7.pdf", plot = pdR_M, width = 6, height = 3.5)
+
+## OTR g9 ####
 
 load("graph_dat.RData")
 otr <- rate_care_day_otr_long
@@ -77,31 +135,6 @@ paR_OTR <- ggplot(otr[otr$variable!="On-The-Run Rate",]
           panel.grid.minor = element_blank(),
           strip.background = element_blank())
 
-ggsave("otr.pdf", plot = paR_OTR, width = 15, height = 5)
-
-
-## safe care-days ####
-safe.care = sp_rate_care_day_maltreatment_clean %>% 
-    mutate(safe.rate = 1e5 - care.day.incident.rate,
-           ucl.old = ucl,
-           ucl = 1e5 - lcl,
-           lcl = 1e5 - ucl.old) %>%
-    select(fiscal.yr, safe.rate, ucl, lcl)
-
-safe.care.plot = ggplot(safe.care, aes(x = fiscal.yr, y = safe.rate)) +
-    geom_line(aes(y = ucl), color = poc_colors[2]) +
-    geom_line(aes(y = lcl), color = poc_colors[1]) +
-    geom_line(color = poc_colors[4]) +
-    geom_point(size = 2, color = poc_colors[4]) +
-    scale_y_continuous(limits = c(99980, 1e5), expand = c(0, 0), labels = comma_format()) +
-    scale_x_continuous(breaks = seq(2000, 2014, by = 4)) +
-    labs(x = "", y = "Note: y-axis does not start at 0",
-         title = "Safe Care-Days per 100,000 Care-Days") +
-    theme_bw() +
-    theme(legend.position="bottom",
-          panel.grid.minor = element_blank(),
-          strip.background = element_blank())
-
-ggsave("safe-care.pdf", plot = safe.care.plot, width = 7, height = 5)
-
+#ggsave("otr.pdf", plot = paR_OTR, width = 15, height = 5)
+ggsave("graph-9.pdf", plot = paR_OTR, width = 15, height = 5)
 
