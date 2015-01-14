@@ -89,6 +89,7 @@ for(i in 1:length(2000:2014)){
 #                       order by 
 #                         cd.state_fiscal_yyyy")
 #save(sibs, file = "sibs-recalculated.Rdata")
+load("sibs-recalculated.Rdata")
 
 ## Correcting transition staffing:
 # plan <- sqlQuery(con, "select
