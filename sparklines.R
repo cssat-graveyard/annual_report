@@ -186,4 +186,34 @@ tables$pdf <- paste0("spark-", names(sparkdata))
 write.csv(tables[, -1], file = "spark table data.csv", row.names = F)
 
 
+#### Sparkline addendum: 3+ rates for intakes and screening
 
+con = odbcConnect("POC")
+
+osi = sqlQuery(con, "select
+               start_date
+               ,date_type
+               ,qry_type
+               ,county_cd
+               ,sum(cnt_referrals) cnt_referrals
+               ,sum(prior_order_cnt_households) prior_order_cnt_households
+               ,iif(nth_order <= 3, cast(nth_order as varchar(1)), 'More than 3 Prior') nth_order 
+               from CA_ODS.prtl.rate_referrals_order_specific
+               where county_cd = 0
+               and start_date >= '2009-02-01'
+               group by 
+               start_date
+               ,date_type
+               ,qry_type
+               ,county_cd
+               ,iif(nth_order <= 3, cast(nth_order as varchar(1)), 'More than 3 Prior')
+               order by 
+               start_date, county_cd, nth_order ")
+
+osi %<>% mutate(prior = factor(nth_order, labels = c("0", "1", "2", "3 or More")),
+                rate = cnt_referrals / prior_order_cnt_households * 1000)
+
+threeplus = spark(osi[osi$nth_order == "More than 3 Prior", c("start_date", "rate")])
+ggsave("spark-table2-row4.pdf", threeplus, width = 3, height = 1)
+embedFonts("spark-table2-row4.pdf")
+sparktable(osi[osi$nth_order == "More than 3 Prior", c("start_date", "rate")])

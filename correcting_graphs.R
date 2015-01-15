@@ -7,7 +7,7 @@ library(dplyr)
 
 ## constants:
 bound.line.size = 0.5
-data.point.size = 1.8
+data.point.size = 1
 data.line.size = 1
 base.size = 10
 
@@ -39,11 +39,49 @@ ggsave(file="graph-1.pdf", plot = pR_I_counts, width = 3, height = 2.5)
 
 ## order specific intakes g2 ####
 
-# waiting on Joe...
 
-# graphs 3, 4, and 5 were cut ####
+con = odbcConnect("POC")
 
-## safe care-days g6 ####
+osi = sqlQuery(con, "select
+start_date
+,date_type
+,qry_type
+,county_cd
+,sum(cnt_referrals) cnt_referrals
+,sum(prior_order_cnt_households) prior_order_cnt_households
+,iif(nth_order <= 3, cast(nth_order as varchar(1)), 'More than 3 Prior') nth_order 
+from CA_ODS.prtl.rate_referrals_order_specific
+where county_cd = 0
+and start_date > '2009-02-01'
+group by 
+start_date
+,date_type
+,qry_type
+,county_cd
+,iif(nth_order <= 3, cast(nth_order as varchar(1)), 'More than 3 Prior')
+order by 
+start_date, county_cd, nth_order ")
+
+osi %<>% mutate(prior = factor(nth_order, labels = c("0", "1", "2", "3 or More")),
+                rate = cnt_referrals / prior_order_cnt_households * 1000)
+
+osi.plot = ggplot(osi, aes(x = start_date, y = rate, color = prior)) +
+    geom_point(size = data.point.size) +
+    geom_smooth(method = "lm", fill = NA, size = data.line.size) +
+    scale_color_manual(values = poc_colors[1:4], name = "Number of Prior Referrals") +
+    labs(x = "", y = "Referral Rate (per 1,000)") +
+    theme_bw(base_size = base.size) +
+    theme(legend.position = "right",
+          legend.direction = "vertical",
+          panel.grid.minor = element_blank(),
+          strip.background = element_blank(),
+          axis.title = element_text(size = rel(0.8)))
+
+ggsave("Graph-2.pdf", plot = osi.plot,  width = 6, height = 3.5)
+
+# old graphs 4 and 5 were cut ####
+
+## safe care-days g4 ####
 safe.care = sp_rate_care_day_maltreatment_clean %>% 
     mutate(safe.rate = 1e5 - care.day.incident.rate,
            ucl.old = ucl,
@@ -69,7 +107,7 @@ safe.care.plot = ggplot(safe.care, aes(x = fiscal.yr, y = safe.rate)) +
 #ggsave("safe-care.pdf", plot = safe.care.plot, width = 5, height = 3.5)
 ggsave("graph-6.pdf", plot = safe.care.plot, width = 5, height = 3.5)
 
-## overall transitions g7 ####
+## overall transitions g5 ####
 
 cdm = rate_care_day_movement_long
 levels(cdm$years_in_care) = str_replace(levels(cdm$years_in_care), "Care Days", "Care-Days")
@@ -100,7 +138,7 @@ pdR_M <- ggplot(filter(cdm, variable != "Movement Rate")
           axis.title = element_text(size = rel(0.8)))
 ggsave("graph-7.pdf", plot = pdR_M, width = 7, height = 3.5)
 
-## moves to kin g8 ####
+## moves to kin g6 ####
 
 move_to_kin <- filter(rate_care_day_movement_tx_long, str_detect(type, "Kin"))
 move_to_kin <- dcast(move_to_kin, formula = fiscal_yr + years_in_care + type ~ variable, value.var = "value")
@@ -127,7 +165,7 @@ move_to_kin_graph <- ggplot(move_to_kin, aes(x = fiscal_yr, y = Movement.Rate,
 
 ggsave("graph-8.pdf", plot = move_to_kin_graph, width = 7, height = 3.5)
 
-## OTR g9 ####
+## OTR g7 ####
 
 #load("graph_dat.RData")
 otr <- rate_care_day_otr_long
@@ -163,21 +201,22 @@ paR_OTR <- ggplot(otr[otr$variable!="On-The-Run Rate",]
           axis.title = element_text(size = rel(0.8)))
 
 #ggsave("otr.pdf", plot = paR_OTR, width = 15, height = 5)
-ggsave("graph-9.pdf", plot = paR_OTR, width = 7, height = 2.5)
+ggsave("Graph-7.pdf", plot = paR_OTR, width = 8, height = 2.3)
 
-## permanency g10 ####
+## permanency g8 ####
 #TODO
 
-## adoption g11 ####
+## adoption g9 ####
 #TODO
 
-## siblings g12
-#TODO
+## siblings g10 ####
 
-load("sibs-recalculated.Rdata")
+# Using Erik's version
 
-sibs %>% select(fiscal_yr = state_fiscal_yyyy, pct = prp_some_tgh) %>%
-    mutate()
+# load("sibs-recalculated.Rdata")
+# 
+# sibs %>% select(fiscal_yr = state_fiscal_yyyy, pct = prp_some_tgh) %>%
+#     mutate()
     
 
 # sp_sib_plcmt$lcl <- mean_rate-(mean_variance*qnorm(0.997))
@@ -198,13 +237,13 @@ sibs %>% select(fiscal_yr = state_fiscal_yyyy, pct = prp_some_tgh) %>%
 # ggsave(file="graph12_sibling_placenment_v2.pdf") 
 
 
-## staffing g13 ####
+## staffing g11 ####
 #TODO
 
-## literacy g14 ####
+## literacy g12 ####
 #TODO
 
-## dropout g15 ####
+## dropout g13 ####
 
 con <- odbcConnect("test_annie")
 #library(Hmisc)
@@ -242,10 +281,10 @@ pR_D <- ggplot(hsc[hsc$fl_disability==0,]
 
 ggsave(file="graph-15.pdf", plot = pR_D, width = 4, height = 2.2)
 
-## postsec enrollment g16 ####
+## postsec enrollment g14 ####
 
 # TODO
 
-## postsec completion g17 ####
+## postsec completion g15 ####
 
 # TODO

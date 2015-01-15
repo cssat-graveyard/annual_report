@@ -23,12 +23,7 @@ dat <- sqlQuery(con, "select
                 ref_gt_3
                 ,ref1.start_date")
 
-sibs <- 
-load("C:/Users/oieeri26/Desktop/GitHub/annual_report/sibs-recalculated.Rdata")
-ls()
-names(sibs-recalculated)
-
-?load
+load("sibs-recalculated.Rdata")
 
 pR_I_prpgt3 <- ggplot(dat, aes(x=start_date, y = prp_gt3, colour=poc_colors[3])) + 
   geom_smooth(colour=poc_colors[3], fill=NA, size=2) + 

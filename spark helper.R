@@ -3,10 +3,6 @@ library(pocr)
 
 # Spark helper functions
 
-first_last <- function(data) {
-    data[c(1, nrow(data)), ]
-}
-
 
 # Base version
 # pdf(file = "test-spark-base.pdf", width = 2, height = 1)
@@ -30,6 +26,8 @@ first_last <- function(data) {
 }
 
 # Draws sparkline
+# assumes first column is x, second is y
+# other columns ignored
 spark <- function(data) {
     x = names(data)[1]
     y = names(data)[2]

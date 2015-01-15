@@ -1172,16 +1172,18 @@ pR_SP <- ggplot(sp_sib_plcmt_long
                      ,y=value
                      ,group=variable
                      ,colour=variable)) + 
-  geom_line(size=1) +
-  xlab("") +
-  ylab("Rate of Sibling Placement") + 
-  scale_color_manual(name = ""
-                     ,values=c(poc_colors[c(1,3,2)])) +
-  theme_bw() +
-  theme(legend.position="bottom")
+    geom_line(size=1) +
+    labs(x = "", 
+         y = "Rate of Sibling Placement") + 
+    scale_y_continuous(labels = percent_format()) +
+    scale_color_manual(name = ""
+                       ,values=c(poc_colors[c(1,3,2)]), guide = FALSE) +
+    theme_bw() +
+    theme(legend.position="bottom")
 
-R_SP_14 <- sp_sib_plcmt[sp_sib_plcmt$fiscal_yr==2014, ][[4]]
-R_SP_13 <- sp_sib_plcmt[sp_sib_plcmt$fiscal_yr==2013, ][[4]]
+pR_SP
+# R_SP_14 <- sp_sib_plcmt[sp_sib_plcmt$fiscal_yr==2014, ][[4]]
+# R_SP_13 <- sp_sib_plcmt[sp_sib_plcmt$fiscal_yr==2013, ][[4]]
 
 
 ggsave(file="p28_graph2.pdf")
