@@ -281,6 +281,10 @@ pR_D <- ggplot(hsc[hsc$fl_disability==0,]
 
 ggsave(file="graph-15.pdf", plot = pR_D, width = 4, height = 2.2)
 
+pdfs <- list.files(pattern = "Graph.*\\.pdf")
+lapply(pdfs, embedFonts)
+
+
 ## postsec enrollment g14 ####
 
 # TODO
