@@ -1,11 +1,11 @@
 require(RODBC)
 require(pocr)
 require(sqldf)
-con <- odbcConnect("Test Annie")
+con <- odbcConnect("test_annie")
 sp_rate_referral <- sqlQuery(con, "call sp_rate_referral('0','0','0')")
 sp_rate_referral_clean <- cr_clean(sp_rate_referral)
 
-get.rows <- sp_rate_referral_clean$date >= as.Date("2009-02-01") & 
+get.rows <- sp_rate_referral_clean$date >= as.Date("2009-07-01") & 
   sp_rate_referral_clean$date <= as.Date("2014-07-01") 
 sp_rate_referral_clean <- sp_rate_referral_clean[get.rows, ] 
 

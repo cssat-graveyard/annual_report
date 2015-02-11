@@ -217,3 +217,19 @@ threeplus = spark(osi[osi$nth_order == "More than 3 Prior", c("start_date", "rat
 ggsave("spark-table2-row4.pdf", threeplus, width = 3, height = 1)
 embedFonts("spark-table2-row4.pdf")
 sparktable(osi[osi$nth_order == "More than 3 Prior", c("start_date", "rate")])
+
+## redoing trans-specific movement
+move.nums = str_extract(names(movement_tx), pattern = "[0-9]")
+names(movement_tx) = str_replace(names(movement_tx), pattern = "^.*Trans", replacement = "Trans")
+names(movement_tx) = paste(names(movement_tx), move.nums, sep = ".")
+move.plots <- lapply(movement_tx, FUN = spark)
+
+for(i in seq_along(move.plots)) {
+    ggsave(filename = paste0("spark-", names(move.plots)[i], ".pdf"),
+           plot = move.plots[[i]], width = 3, height = 1)
+}
+
+pdfs <- list.files(pattern = ".*Transition.*\\.pdf")
+lapply(pdfs, embedFonts)
+
+

@@ -31,6 +31,7 @@ first_last <- function(data) {
 spark <- function(data) {
     x = names(data)[1]
     y = names(data)[2]
+    data = data[order(data[x]), ]
     sparkline = ggplot(data, aes_string(x = x, y = y)) +
         geom_line(color = portal_colors[8]) +
         theme_clean() +
