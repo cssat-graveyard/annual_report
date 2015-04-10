@@ -1,5 +1,6 @@
 library(ggplot2)
 library(pocr)
+library(dplyr)
 
 # Spark helper functions
 
