@@ -240,15 +240,14 @@ sp_reent <- sqlQuery(con, "SELECT
                                 state_fiscal_yyyy 
                                 ,per_reent
                             FROM test_annie.episode_reentries_av 
-                            WHERE old_region_cd = 0;")
+                            WHERE old_region_cd = 0
+                                and state_fiscal_yyyy < 2014;")
 
 spark.first_last <- first_last(sp_reent)
 
 reent.spark <- spark(sp_reent)
 
 ggsave("spark-reent.1year.pdf", reent.spark, width = 3, height = 1)
-
-?ggsave
 
 reent.sparktable <- sparktable(sp_reent)
 
