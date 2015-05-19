@@ -1,6 +1,6 @@
 
 source("functions.R")
-source("configurations")
+source("configurations.R")
 
 ###################################################
 # Rate of Children in Out-of-Home Care On-the-Run #
