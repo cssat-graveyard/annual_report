@@ -108,7 +108,7 @@ class_convert <- function(x) {
 ###############
 
 con_test_annie <- odbcConnect("test_annie")
-con_poc2 <- odbcConnect("POC")
+con_poc <- odbcConnect("POC")
 
 ################
 # Dates for TS #
