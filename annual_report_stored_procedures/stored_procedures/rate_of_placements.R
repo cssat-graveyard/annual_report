@@ -1,5 +1,6 @@
 
 source("functions.R")
+source("configurations")
 
 ######################
 # Rate of Placements #

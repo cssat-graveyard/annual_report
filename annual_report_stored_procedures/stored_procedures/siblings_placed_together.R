@@ -1,5 +1,10 @@
 
+##########################################
+## NEED TO FIND TEMP TABLE CODE FOR THIS #
+##########################################
+
 source("functions.R")
+source("configurations")
 
 ############################
 # Siblings Placed Together #
@@ -21,9 +26,6 @@ dat <- sqlQuery(con_poc, "select
 for(i in 1:ncol(dat)){ 
     dat[[i]] <- class_convert(dat[[i]])
 }							
-
-ggplot(dat, aes(x = state_fiscal_yyyy, y = prp_some_tgh)) +
-    geom_line()
 
 # loading data into mySQL
 # sqlDrop(con_test_annie, sqtable = "test_annie.sibling_placement")

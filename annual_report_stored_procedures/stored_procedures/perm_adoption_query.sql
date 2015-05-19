@@ -220,5 +220,125 @@ GROUP BY  tce.child
 
 
 
+update ##placements
+set flag_trh=1
+--  select * 
+ from ##placements 
+ where NOT(tx_end_rsn = 'Changed Caregiver'  and charindex('Trial Return Home',prior_end_rsn)>0)
+				and charindex('Trial Return Home',prior_end_rsn)>0
+
+--select * from #placements where anniv_removal_dt is null
+--these are last placements before a discharge where the discharge occurs prior to the removal anniversary date within the fiscal year
+update ##placements
+set anniv_removal_dt = null
+		,care_day_cnt_prior_anniv=datediff(dd,iif(fy_start_date>=plc_begin
+		,fy_start_date,plc_begin)
+		,iif(fy_stop_date <=IIF(discharg_frc_18>plc_end,plc_end,discharg_frc_18) ,fy_stop_date,IIF(discharg_frc_18>plc_end,plc_end,discharg_frc_18)))
+		,prior_year_service=dbo.fnc_datediff_yrs(removal_dt,discharg_frc_18)
+where   anniv_removal_dt not between removal_dt and discharg_frc_18 
+
+delete  ##placements where anniv_removal_dt is null and care_day_cnt_prior_anniv =0 ;
+
+-- update the placements containing the anniversary dates.
+update ##placements 
+set care_day_cnt_prior_anniv=datediff(dd,iif(fy_start_date>=plc_begin,fy_start_date,plc_begin),anniv_removal_dt)
+		,prior_year_service=dbo.fnc_datediff_yrs(removal_dt,iif(removal_dt<>anniv_removal_dt,dateadd(dd,-1,anniv_removal_dt),removal_dt))
+		,care_day_cnt_post_anniv=datediff(dd,anniv_removal_dt,iif(plc_end>=fy_stop_date,fy_stop_date,plc_end))
+		,post_year_service=dbo.fnc_datediff_yrs(removal_dt,anniv_removal_dt)
+where anniv_removal_dt is not null and anniv_removal_dt between plc_begin and plc_end
+
+--update the placements without the anniversary dates
+update P 
+set care_day_cnt_prior_anniv=datediff(dd,iif(fy_start_date>=plc_begin	,fy_start_date,plc_begin),iif(plc_end>=fy_stop_date,fy_stop_date,plc_end))
+		,prior_year_service=dbo.fnc_datediff_yrs(removal_dt, iif(plc_begin<fy_start_date,fy_start_date,plc_begin)) 
+from ##placements P
+where anniv_removal_dt is not null and anniv_removal_dt NOT between plc_begin and plc_end
+
+----------------------------------
+---- RUN THIS LINE SEPERATELY ----
+----------------------------------
+
+--add case id
+alter table ##placements
+add id_intake_fact int;
+
+----------------------------------
+
+update
+    ##placements
+set
+    ##placements.id_intake_fact = [base].[rptPlacement].id_intake_fact
+from
+  ##placements
+inner join
+    [base].[rptPlacement]
+on
+    ##placements.id_removal_episode_fact = [base].[rptPlacement].id_removal_episode_fact
+
+----------------------------------
+---- RUN THIS LINE SEPERATELY ----
+----------------------------------
+
+alter table ##placements
+add id_provider_dim_caregiver int;
+
+----------------------------------
+
+update
+    ##placements
+set
+    ##placements.id_provider_dim_caregiver = [base].[rptPlacement_Events].id_provider_dim_caregiver
+from
+    ##placements
+join
+    [base].[rptPlacement_Events]
+on
+    ##placements.id_placement_fact = [base].[rptPlacement_Events].id_placement_fact
 
 
+----------------------------------
+---- RUN THIS LINE SEPERATELY ----
+----------------------------------
+
+if object_id('tempdb..##tbl_sib_ep_cnt') is not null
+  drop table ##tbl_sib_ep_cnt
+
+select 
+    id_calendar_dim 
+    ,id_intake_fact 
+    ,count(id_intake_fact) cnt_id_intake
+into ##tbl_sib_ep_cnt
+from calendar_dim cd
+    join ##placements pl
+        on cd.ID_CALENDAR_DIM between 
+            convert(int, convert(varchar(10), pl.plc_begin , 112)) and convert(int, convert(varchar(10), pl.plc_end, 112)) 
+where
+    cd.state_fiscal_yyyy between 2000 and 2014
+group by
+    id_calendar_dim 
+    ,id_intake_fact 
+having count(id_intake_fact) > 1
+
+----------------------------------
+---- RUN THIS LINE SEPERATELY ----
+----------------------------------
+
+if object_id('tempdb..##tbl_sib_plc_cnt') is not null
+    drop table ##tbl_sib_plc_cnt
+
+select 
+    id_calendar_dim 
+    ,id_intake_fact 
+    ,id_provider_dim_caregiver 
+    ,count(id_intake_fact) cnt_id_intake
+into ##tbl_sib_plc_cnt
+from CALENDAR_DIM cd
+    join ##placements pl
+        on cd.ID_CALENDAR_DIM between 
+            convert(int, convert(varchar(10), pl.plc_begin , 112)) and convert(int, convert(varchar(10), pl.plc_end, 112)) 
+where
+    cd.state_fiscal_yyyy between 2000 and 2014
+group by
+    id_calendar_dim 
+    ,id_intake_fact 
+    ,id_provider_dim_caregiver 

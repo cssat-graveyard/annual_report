@@ -1,5 +1,6 @@
 
 source("functions.R")
+source("configurations")
 
 ###########################################################
 # Rate of Screened-In Report by Prior Screened-In Reports #

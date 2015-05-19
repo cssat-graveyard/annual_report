@@ -1,5 +1,6 @@
 
 source("functions.R")
+source("configurations")
 
 ###########################################
 # pRate of Placements by Prior Placements #

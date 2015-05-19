@@ -1,5 +1,6 @@
 
 source("functions.R")
+source("configurations")
 
 #######################################################
 # Rate of Placement Moves by Type of Out-of-Home Care #

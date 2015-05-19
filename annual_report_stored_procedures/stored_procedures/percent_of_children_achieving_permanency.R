@@ -4,6 +4,7 @@
 ##########################################
 
 source("functions.R")
+source("configurations")
 
 ############################################
 # Percent of Children Achieving Permanency #

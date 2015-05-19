@@ -1,5 +1,6 @@
 
 source("functions.R")
+source("configurations")
 
 ########################################
 # Percent of Children Re-Entering Care #
