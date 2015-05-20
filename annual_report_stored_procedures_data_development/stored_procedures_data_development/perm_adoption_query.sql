@@ -69,7 +69,7 @@ from (select  distinct state_fiscal_yyyy sfy
 							,max(ID_CALENDAR_DIM)  over (partition by state_fiscal_yyyy order by ID_CALENDAR_DIM asc RANGE between current row and UNBOUNDED FOLLOWING) fy_stop_date_int
 							,min(calendar_date)  over (partition by state_fiscal_yyyy order by calendar_date)  fy_start_date
 							,max(calendar_date)  over (partition by state_fiscal_yyyy order by calendar_date asc RANGE between current row and UNBOUNDED FOLLOWING)   fy_stop_date 
-						from ca_ods.dbo.calendar_dim 
+						from dbo.calendar_dim 
 						where state_fiscal_yyyy between @fystart and @fystop
 				) cd
 join ref_last_dw_transfer dw on dw.cutoff_date=dw.cutoff_date
@@ -216,9 +216,6 @@ GROUP BY  tce.child
 					  ,flag_7day
 					  ,fl_nondcfs_custody
 					  ,rldte.alt_discharge_type
-
-
-
 
 update ##placements
 set flag_trh=1
@@ -396,8 +393,8 @@ from base.rptPlacement rp
 					min(id_calendar_dim_plan_date) first_plan_act
 					,id_prsn_child 
 				from 
-					ca_ods.dbo.EDUCATION_PLAN_FACT epf
-						join ca_ods.dbo.people_dim pd 
+					dbo.EDUCATION_PLAN_FACT epf
+						join dbo.people_dim pd 
 							on pd.id_prsn = epf.id_prsn_child 
 							and id_calendar_dim_plan_date <= convert(int, convert(varchar, dateadd(yy, 18, dt_birth),112))
 						group by 
