@@ -1,4 +1,19 @@
 
+############
+# Packages #
+############
+
+library(RODBC)
+library(Hmisc)
+library(magrittr)
+library(pocr)
+library(mstate)
+library(ggplot2)
+library(xlsx)
+library(stringr)
+library(reshape2)
+library(dplyr)
+
 ###############
 # Connections #
 ###############

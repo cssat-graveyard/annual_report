@@ -1,0 +1,22 @@
+Non-Disabled,,,,Disabled,,,,
+,Non-Disabled Foster care,Non-Disabled FRL Non-Foster,Non-Disabled Non-Foster,,,Disabled Foster care,Disabled FRL Non-Foster,Disabled Non-Foster
+2006-07,N=213,N=27446,N=35516,2006-07,,N=125,N=5694,N=4901
+Mean test score,405.1455,404.4189,422.9007,Mean test score,,375.736,376.862,398.2808
+Standard Deviation,-23.84,-27.06,-25.43,Standard Deviation,,-30.9,-30.6,-33.13
+P-Values,,0.6585,0,P-Values,,,0.6875,0
+Proportion passed,68.08%,63.30%,86.84%,Proportion passed,,32.80%,31.19%,56.95%
+P-values,,0.1499,0,P-values,,,0.7009,0
+,,,,,,,,
+2007-08,N=255,N= 28281,N=35020,2007-08,,N=127,N=6178,N=4840 
+Mean test score,405.2706,406.1347,424.3107,Mean test score,,377.063,374.805,396.839
+Standard Deviation,-24.64,-27.7,-25.3,Standard Deviation,,-32.75,-32.43,-34.49
+P-Values,,0.5781,0,P-Values,,,0.4431,0
+Proportion passed,63.92%,63.89%,87.13%,Proportion passed,,26.77%,25.48%,52.25%
+P-Values,,0.9919,0,P-Values,,,0.7405,0
+,,,,,,,,
+2008-09,N=264,N=29773,N=34392 ,2008-09,,N=123,N=6514,N=4676
+Mean test score,406.4773,406.7788,425.1648,Mean test score,,378.8699,379.3812,399.4611
+Standard Deviation,-23.9,-25.54,-25.71,Standard Deviation,,-28.03,-28.46,-33.28
+P-Values,,0.8385,0,P-Values,,,0.8415,0
+Proportion passed,66.29%,65.59%,87.54%,Proportion passed,,26.02%,26.33%,52.72%
+P-Values,,0.8129,0,P-Values,,,0.938,0
