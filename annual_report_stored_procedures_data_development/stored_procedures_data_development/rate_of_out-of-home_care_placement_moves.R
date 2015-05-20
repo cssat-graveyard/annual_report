@@ -14,7 +14,7 @@ rate_care_day_movement <- sqlQuery(con_poc,"SELECT
                                                 ,MOB.placement_moves
                                                 ,MOB.care_days
                                                 ,MOB.placement_moves*100000.0 / IIF(MOB.care_days = 0, NULL, MOB.care_days) AS movement_rate
-                                            FROM ca_ods.prtl.placement_care_days_mobility AS MOB
+                                            FROM prtl.placement_care_days_mobility AS MOB
                                             JOIN [dbo].[ref_lookup_county] AS C
                                                 ON MOB.county_cd = C.county_cd	
                                             WHERE MOB.exclude_7day = 1
@@ -72,5 +72,5 @@ for(i in 1:ncol(dat2)){
 }	
 
 # loading data into mySQL
-# sqlDrop(con_test_annie, sqtable = "test_annie.placement_care_days_mobility_limits_ds")
-sqlSave(con_test_annie, dat = dat2, tablename = "test_annie.placement_care_days_mobility_limits_ds", rownames = FALSE)															
+# sqlDrop(con_test_annie, sqtable = "placement_care_days_mobility_limits_ds")
+sqlSave(con_test_annie, dat = dat2, tablename = "placement_care_days_mobility_limits_ds", rownames = FALSE)															

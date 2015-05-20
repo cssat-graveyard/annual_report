@@ -50,5 +50,5 @@ for(i in 1:ncol(dat1)){
 }									
 
 # loading data into mySQL
-# sqlDrop(con_test_annie, sqtable = "test_annie.rate_care_day_maltreatment_limits")
-sqlSave(con_test_annie, dat = dat1, tablename = "test_annie.rate_care_day_maltreatment_limits", rownames = FALSE)
+# sqlDrop(con_test_annie, sqtable = "rate_care_day_maltreatment_limits")
+sqlSave(con_test_annie, dat = dat1, tablename = "rate_care_day_maltreatment_limits", rownames = FALSE)

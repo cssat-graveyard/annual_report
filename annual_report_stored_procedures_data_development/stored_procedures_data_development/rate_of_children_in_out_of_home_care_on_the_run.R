@@ -14,7 +14,7 @@ rate_care_day_otr <- sqlQuery(con_poc, "SELECT
                               ,OTR.care_days_otr
                               ,OTR.care_days
                               ,OTR.care_days_otr*1000.0/care_days otr_rate
-                              FROM ca_ods.prtl.placement_care_days_otr AS OTR
+                              FROM prtl.placement_care_days_otr AS OTR
                               JOIN [dbo].[ref_lookup_county] AS C
                               ON OTR.cd_cnty = C.county_cd
                               WHERE OTR.excludes_7day = 1
@@ -60,8 +60,8 @@ for(i in 1:ncol(dat2)){
 }	
 
 # loading data into mySQL
-# sqlDrop(con_test_annie, sqtable = "test_annie.placement_care_days_otr_limits")
-sqlSave(con_test_annie, dat = dat2, tablename = "test_annie.placement_care_days_otr_limits", rownames = FALSE)
+# sqlDrop(con_test_annie, sqtable = "placement_care_days_otr_limits")
+sqlSave(con_test_annie, dat = dat2, tablename = "placement_care_days_otr_limits", rownames = FALSE)
 
 
 

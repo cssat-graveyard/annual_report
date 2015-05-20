@@ -33,7 +33,7 @@ long_data <- sqlQuery(con_poc, "select
                       from ##placements plc
                       join ref_lookup_cd_discharge_type_exits rldte
                       on rldte.cd_discharge_type = plc.cd_discharge_type
-                      join ca_ods.dbo.calendar_dim cd
+                      join dbo.calendar_dim cd
                       on cd.calendar_date = plc.removal_dt
                       where state_fiscal_yyyy >= 2000
                       and plc.flag_7day = 0
@@ -83,7 +83,7 @@ short_data <- sqlQuery(con_poc, "select
                        from ##placements plc
                        join ref_lookup_cd_discharge_type_exits rldte
                        on rldte.cd_discharge_type = plc.cd_discharge_type
-                       join ca_ods.dbo.calendar_dim cd
+                       join dbo.calendar_dim cd
                        on cd.calendar_date = plc.removal_dt
                        where state_fiscal_yyyy >= 2000
                        and plc.flag_7day = 0
@@ -215,5 +215,5 @@ for(i in 1:ncol(perm.1year)){
 }		
 
 # loading data into mySQL
-# sqlDrop(con_test_annie, sqtable = "test_annie.permanency_incidence_av")
-sqlSave(con_test_annie, dat = perm.1year, tablename = "test_annie.mp_permanency_incidence_av", rownames = FALSE)
+# sqlDrop(con_test_annie, sqtable = "permanency_incidence_av")
+sqlSave(con_test_annie, dat = perm.1year, tablename = "mp_permanency_incidence_av", rownames = FALSE)

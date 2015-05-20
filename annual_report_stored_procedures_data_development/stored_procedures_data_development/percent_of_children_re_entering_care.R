@@ -31,29 +31,28 @@ sp_reent <- sqlQuery(con_poc, "SELECT
                      eps.id_prsn_child
                      ,eps.removal_dt
                      ,federal_discharge_date
-                     FROM [CA_ODS].[prtl].[ooh_dcfs_eps] AS eps
-                     WHERE -- id_prsn_child = 33564
-                     -- DATEDIFF(YEAR, eps.birth_dt, eps.removal_dt) < 18
+                     FROM [prtl].[ooh_dcfs_eps] AS eps
+                     WHERE 
                      [dbo].[fnc_datediff_yrs](eps.birth_dt, eps.removal_dt) < 18
                      AND fl_exit_over_17 = 0
                      AND DATEDIFF(DAY, eps.removal_dt, federal_discharge_date) > 7
                      AND discharge_type IN ('Guardianship', 'Reunification')) AS id
-                     JOIN [CA_ODS].[prtl].[ooh_dcfs_eps] as eps
+                     JOIN [prtl].[ooh_dcfs_eps] as eps
                      ON id.federal_discharge_date = eps.federal_discharge_date
                      AND id.id_prsn_child = eps.id_prsn_child
                      AND id.removal_dt = eps.removal_dt
-                     JOIN CA_ODS.[dbo].[CALENDAR_DIM] AS cal
+                     JOIN [dbo].[CALENDAR_DIM] AS cal
                      ON eps.federal_discharge_date = cal.CALENDAR_DATE
                      GROUP BY
                      cal.STATE_FISCAL_YYYY
                      ,eps.id_prsn_child) AS id
-                     JOIN [CA_ODS].[prtl].[ooh_dcfs_eps] as eps
+                     JOIN [prtl].[ooh_dcfs_eps] as eps
                      ON id.federal_discharge_date = eps.federal_discharge_date
                      AND id.id_prsn_child = eps.id_prsn_child
-                     JOIN CA_ODS.[dbo].[ref_lookup_county] AS c
+                     JOIN [dbo].[ref_lookup_county] AS c
                      ON eps.exit_county_cd = c.county_cd
                      AND old_region_cd != -99
-                     JOIN CA_ODS.[dbo].[CALENDAR_DIM] AS cal
+                     JOIN [dbo].[CALENDAR_DIM] AS cal
                      ON eps.federal_discharge_date = cal.CALENDAR_DATE
                      AND cal.STATE_FISCAL_YYYY > 1999
                      AND cal.STATE_FISCAL_YYYY < 2015
@@ -87,28 +86,27 @@ sp_reent <- sqlQuery(con_poc, "SELECT
                      eps.id_prsn_child
                      ,eps.removal_dt
                      ,federal_discharge_date
-                     FROM [CA_ODS].[prtl].[ooh_dcfs_eps] AS eps
-                     WHERE -- id_prsn_child = 33564
-                     -- DATEDIFF(YEAR, eps.birth_dt, eps.removal_dt) < 18
+                     FROM [prtl].[ooh_dcfs_eps] AS eps
+                     WHERE 
                      [dbo].[fnc_datediff_yrs](eps.birth_dt, eps.removal_dt) < 18
                      AND fl_exit_over_17 = 0
                      AND DATEDIFF(DAY, eps.removal_dt, federal_discharge_date) > 7
                      AND discharge_type IN ('Guardianship', 'Reunification')) AS id 
-                     JOIN [CA_ODS].[prtl].[ooh_dcfs_eps] as eps
+                     JOIN [prtl].[ooh_dcfs_eps] as eps
                      ON id.federal_discharge_date = eps.federal_discharge_date
                      AND id.id_prsn_child = eps.id_prsn_child
                      AND id.removal_dt = eps.removal_dt
-                     JOIN CA_ODS.[dbo].[CALENDAR_DIM] AS cal
+                     JOIN [dbo].[CALENDAR_DIM] AS cal
                      ON eps.federal_discharge_date = cal.CALENDAR_DATE
                      GROUP BY
                      cal.STATE_FISCAL_YYYY
                      ,eps.id_prsn_child) AS id
-                     JOIN [CA_ODS].[prtl].[ooh_dcfs_eps] as eps
+                     JOIN [prtl].[ooh_dcfs_eps] as eps
                      ON id.federal_discharge_date = eps.federal_discharge_date
                      AND id.id_prsn_child = eps.id_prsn_child
-                     JOIN CA_ODS.[dbo].[ref_lookup_county] AS c
+                     JOIN [dbo].[ref_lookup_county] AS c
                      ON eps.exit_county_cd = c.county_cd
-                     JOIN CA_ODS.[dbo].[CALENDAR_DIM] AS cal
+                     JOIN [dbo].[CALENDAR_DIM] AS cal
                      ON eps.federal_discharge_date = cal.CALENDAR_DATE
                      AND cal.STATE_FISCAL_YYYY > 1999
                      AND cal.STATE_FISCAL_YYYY < 2015
@@ -125,5 +123,5 @@ for(i in 1:ncol(reent)){
 }	
 
 # loading data into mySQL
-# sqlDrop(con_test_annie, sqtable = "test_annie.episode_reentries_av")
-sqlSave(con_test_annie, dat = reent, tablename = "test_annie.episode_reentries_av", rownames = FALSE)
+# sqlDrop(con_test_annie, sqtable = "episode_reentries_av")
+sqlSave(con_test_annie, dat = reent, tablename = "episode_reentries_av", rownames = FALSE)

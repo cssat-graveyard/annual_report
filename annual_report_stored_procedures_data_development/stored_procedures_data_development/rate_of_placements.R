@@ -8,7 +8,7 @@ source("configurations.R")
 
 placement_rate <- sqlQuery(con_test_annie, "SELECT RP.* 
     								,LC.old_region_cd
-								FROM test_annie.rate_placement AS RP
+								FROM rate_placement AS RP
                            JOIN ref_lookup_county_region AS LC
                            ON RP.county_cd = LC.county_cd;")						
 
@@ -53,5 +53,5 @@ for(i in 1:ncol(dat2)){
 dat2 <- filter(dat2, is.na(trend) == FALSE)
 
 # loading data into mySQL
-# sqlDrop(con_test_annie, sqtable = "test_annie.rate_placement_ts")
-sqlSave(con_test_annie, dat = dat2, tablename = "test_annie.rate_placement_ts", rownames = FALSE)
+# sqlDrop(con_test_annie, sqtable = "rate_placement_ts")
+sqlSave(con_test_annie, dat = dat2, tablename = "rate_placement_ts", rownames = FALSE)

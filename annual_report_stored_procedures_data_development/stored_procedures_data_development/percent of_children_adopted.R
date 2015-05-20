@@ -12,31 +12,26 @@ source("configurations.R")
 
 # loading state level data
 
-sp_adt <- sqlQuery(con, "select 
+sp_adt <- sqlQuery(con_poc, "select 
                    clf.child id_prsn_child 
                    ,[term_to_perm] lolf
                    ,iif(clf.cd_discharge_type in (1, 4, 5, 6), 1, clf.cd_discharge_type) stat
                    ,iif(clf.cd_discharge_type in (1, 4, 5, 6), 'Non-Adoption', clf.alt_discharge_type) discharge_type 
                    ,cd.state_fiscal_yyyy 
                    ,sum(fl_nondcfs_custody) non_dcfs_placements
-                   --,tx_jurisdiction
-                   --,cd_jurisdiction
                    from ##leg_free clf
-                   join ca_ods.dbo.calendar_dim cd
+                   join dbo.calendar_dim cd
                    on cd.calendar_date = clf.legally_free_date
                    where state_fiscal_yyyy >= 2000
                    and clf.flag_7day = 0
                    and [term_to_perm] > 0 
                    and state_fiscal_yyyy <= 2014 
-                   --and row_num = 1
                    group by 
                    clf.child 
                    ,[term_to_perm]
                    ,iif(clf.cd_discharge_type in (1, 4, 5, 6), 1, clf.cd_discharge_type)
                    ,iif(clf.cd_discharge_type in (1, 4, 5, 6), 'Non-Adoption', clf.alt_discharge_type) 
                    ,cd.state_fiscal_yyyy 
-                   --,tx_jurisdiction
-                   --,cd_jurisdiction
                    having sum(fl_nondcfs_custody) = 0
                    order by
                    id_prsn_child")
@@ -57,13 +52,13 @@ adopt.1year$old_region_cd <- 0
 # loading data for regions #
 ############################
 
-location <- sqlQuery(con, "SELECT 
+location <- sqlQuery(con_poc, "SELECT 
                      county_cd
                      ,county_desc
                      ,old_region_cd 
                      FROM [dbo].[ref_lookup_county]")
 
-sp_adt <- sqlQuery(con, "select 
+sp_adt <- sqlQuery(con_poc, "select 
                    clf.child id_prsn_child 
                    ,[term_to_perm] lolf
                    ,iif(clf.cd_discharge_type in (1, 4, 5, 6), 1, clf.cd_discharge_type) stat
@@ -73,7 +68,7 @@ sp_adt <- sqlQuery(con, "select
                    ,tx_jurisdiction
                    ,cd_jurisdiction
                    from ##leg_free clf
-                   join ca_ods.dbo.calendar_dim cd
+                   join dbo.calendar_dim cd
                    on cd.calendar_date = clf.legally_free_date
                    where state_fiscal_yyyy >= 2000
                    and clf.flag_7day = 0
@@ -178,6 +173,6 @@ for(i in 1:ncol(adt.1year)){
 }		
 
 # loading data into mySQL
-# sqlDrop(con_test_annie, sqtable = "test_annie.permanency_incidence_adoption")
-sqlSave(con_test_annie, dat = adt.1year, tablename = "test_annie.permanency_incidence_adoption", rownames = FALSE)
+# sqlDrop(con_test_annie, sqtable = "permanency_incidence_adoption")
+sqlSave(con_test_annie, dat = adt.1year, tablename = "permanency_incidence_adoption", rownames = FALSE)
 

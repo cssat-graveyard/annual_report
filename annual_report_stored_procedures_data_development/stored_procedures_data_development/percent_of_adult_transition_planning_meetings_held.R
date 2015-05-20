@@ -38,5 +38,5 @@ ggplot(dat, aes(x = cohort_fy, y = prp_kids_with_plans, fill = factor(cd_region)
 	geom_bar(stat = 'identity', position = position_dodge()) 
 	
 # loading data into mySQL
-# sqlDrop(con_test_annie, sqtable = "test_annie.adult_readiness")
-sqlSave(con_test_annie, dat = dat, tablename = "test_annie.adult_readiness", rownames = FALSE)
+# sqlDrop(con_test_annie, sqtable = "adult_readiness")
+sqlSave(con_test_annie, dat = dat, tablename = "adult_readiness", rownames = FALSE)

@@ -1,16 +1,4 @@
 
-############
-# Packages #
-############
-
-library(RODBC)
-library(magrittr)
-library(pocr)
-library(mstate)
-library(ggplot2)
-library(reshape2)
-library(dplyr)
-
 ################################
 # Function for getting ts data #
 ################################
