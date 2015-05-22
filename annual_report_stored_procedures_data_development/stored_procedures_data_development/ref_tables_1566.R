@@ -5,9 +5,6 @@ source("configurations.R")
 #######################################
 # Creating disability reference table #
 #######################################
-#######################################
-#### WARNING THIS DATA WAS CHANGED ####
-#######################################
 
 fl_disability <- c(0, 1)
 tx_disibility <- c("Non-Disabled", "Disabled")
@@ -15,9 +12,6 @@ ref_lookup_disability <- as.data.frame(cbind(fl_disability, tx_disibility))
 
 #########################################
 # Creating student typw reference table #
-#########################################
-#########################################
-##### WARNING THIS DATA WAS CHANGED #####
 #########################################
 
 cd_student_type <- c(0, 1, 2, 3)
